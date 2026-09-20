@@ -6,6 +6,7 @@ import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
+import 'data/database/local_data_service.dart';
 import 'features/auth/controllers/auth_controller.dart';
 import 'firebase_options.dart';
 
@@ -15,6 +16,11 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Seed a starter account/transactions on first-ever launch, regardless
+  // of platform — LocalDataService internally handles SQLite vs. web
+  // storage, so this call is identical either way.
+  await LocalDataService().seedIfEmpty();
 
   Get.put(ThemeController());
   Get.put(AuthController(), permanent: true);
