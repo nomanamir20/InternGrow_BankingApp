@@ -14,7 +14,7 @@
 - [ ] Authentication
 - [x] User Profiles
 - [ ] REST API Integration
-- [ ] CRUD Operations
+- [x] CRUD Operations
 - [ ] Local Database
 - [ ] Push Notifications
 - [ ] Search & Filters
