@@ -59,7 +59,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return results;
   }
 
-  bool get _hasActiveFilters => _typeFilter != null || _dateRange != null;
+  bool get _hasActiveFilters =>
+      _typeFilter != null || _dateRange != null || _searchController.text.isNotEmpty;
 
   Future<void> _pickDateRange() async {
     final picked = await showDateRangePicker(
@@ -77,6 +78,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     setState(() {
       _typeFilter = null;
       _dateRange = null;
+      _searchController.clear();
     });
   }
 
