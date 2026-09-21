@@ -17,7 +17,7 @@
 - [x] CRUD Operations
 - [ ] Local Database
 - [ ] Push Notifications
-- [ ] Search & Filters
+- [x] Search & Filters
 - [x] File/Image Upload
 - [ ] Maps Integration
 - [ ] Offline Support
