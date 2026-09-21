@@ -52,6 +52,17 @@ class SqliteDatabaseHelper {
             bankName TEXT NOT NULL
           )
         ''');
+        
+        await db.execute('''
+          CREATE TABLE profile (
+            uid TEXT PRIMARY KEY,
+            fullName TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phoneNumber TEXT,
+            address TEXT,
+            photoPath TEXT
+          )
+        ''');
       },
     );
   }

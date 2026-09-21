@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
-
+import '../models/user_profile_model.dart';
 import '../models/bank_account_model.dart';
 import '../models/beneficiary_model.dart';
 import '../models/bank_transaction_model.dart';
@@ -120,6 +120,41 @@ class LocalDataService {
     }
     final db = await SqliteDatabaseHelper.database;
     await db.delete(_beneficiariesTable, where: 'id = ?', whereArgs: [id]);
+  }
+
+ // ---------- Profile ----------
+
+  static const _profileTable = 'profile';
+
+  Future<UserProfile?> getProfile(String uid) async {
+    if (kIsWeb) {
+      final rows = await WebStorageHelper.getAll(_profileTable);
+      final match = rows.where((r) => r['uid'] == uid);
+      return match.isEmpty ? null : UserProfile.fromMap(match.first);
+    }
+    final db = await SqliteDatabaseHelper.database;
+    final rows = await db.query(_profileTable, where: 'uid = ?', whereArgs: [uid]);
+    return rows.isEmpty ? null : UserProfile.fromMap(rows.first);
+  }
+
+  Future<void> saveProfile(UserProfile profile) async {
+    final existing = await getProfile(profile.uid);
+
+    if (kIsWeb) {
+      if (existing == null) {
+        await WebStorageHelper.insert(_profileTable, profile.toMap());
+      } else {
+        await WebStorageHelper.update(_profileTable, profile.uid, profile.toMap());
+      }
+      return;
+    }
+
+    final db = await SqliteDatabaseHelper.database;
+    if (existing == null) {
+      await db.insert(_profileTable, profile.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    } else {
+      await db.update(_profileTable, profile.toMap(), where: 'uid = ?', whereArgs: [profile.uid]);
+    }
   }
 
   // ---------- First-run seeding ----------

@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'features/profile/controllers/profile_controller.dart';
 import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
@@ -22,8 +22,9 @@ Future<void> main() async {
   // storage, so this call is identical either way.
   await LocalDataService().seedIfEmpty();
 
-  Get.put(ThemeController());
-  Get.put(AuthController(), permanent: true);
+   Get.put(ThemeController());
+   Get.put(AuthController(), permanent: true);
+   Get.put(ProfileController(), permanent: true);
 
   runApp(const InternGrowBankingApp());
 }

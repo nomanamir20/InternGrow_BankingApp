@@ -12,13 +12,13 @@
 ## ✨ Mandatory Features
 
 - [ ] Authentication
-- [ ] User Profiles
+- [x] User Profiles
 - [ ] REST API Integration
 - [ ] CRUD Operations
 - [ ] Local Database
 - [ ] Push Notifications
 - [ ] Search & Filters
-- [ ] File/Image Upload
+- [x] File/Image Upload
 - [ ] Maps Integration
 - [ ] Offline Support
 - [ ] Error Handling

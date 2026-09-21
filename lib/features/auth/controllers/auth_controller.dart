@@ -56,4 +56,7 @@ class AuthController extends GetxController {
     await _authService.signOut();
     Get.offAllNamed(AppRoutes.login);
   }
+  Future<void> updateDisplayNamePublic(String name) async {
+    await _authService.updateDisplayName(name);
+  }
 }
