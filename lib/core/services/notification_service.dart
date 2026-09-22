@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 class NotificationService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
-  // TODO: replace with your real VAPID key from Firebase Console.
-  static const String _vapidKey = 'YOUR_VAPID_KEY_HERE';
+  static const String _vapidKey =
+      'BIo6ZbwglkwU12gBjOmUnCLZiplAIZXvhEckV5gf8IhY7fSzm9_HvKe54TsZCyRlrgmmpLsd8vPOMfyRA5I4c1I';
 
   Future<void> initialize({
     required void Function(RemoteMessage message) onForegroundMessage,
