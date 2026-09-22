@@ -13,7 +13,7 @@
 
 - [ ] Authentication
 - [x] User Profiles
-- [ ] REST API Integration
+- [x] REST API Integration
 - [x] CRUD Operations
 - [ ] Local Database
 - [ ] Push Notifications
