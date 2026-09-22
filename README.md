@@ -19,7 +19,7 @@
 - [ ] Push Notifications
 - [x] Search & Filters
 - [x] File/Image Upload
-- [ ] Maps Integration
+- [x] Maps Integration
 - [ ] Offline Support
 - [ ] Error Handling
 - [ ] Responsive UI
