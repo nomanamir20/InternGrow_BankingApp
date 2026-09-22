@@ -11,6 +11,7 @@ import 'features/auth/controllers/auth_controller.dart';
 import 'features/home/controllers/account_controller.dart';
 import 'features/beneficiaries/controllers/beneficiary_controller.dart';
 import 'features/currency/controllers/currency_controller.dart';
+import 'features/notifications/controllers/notification_center_controller.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -25,12 +26,13 @@ Future<void> main() async {
   // storage, so this call is identical either way.
   await LocalDataService().seedIfEmpty();
 
-         Get.put(ThemeController());
-         Get.put(AuthController(), permanent: true);
-         Get.put(ProfileController(), permanent: true);
-         Get.put(AccountController(), permanent: true);
-         Get.put(BeneficiaryController(), permanent: true);
-         Get.put(CurrencyController(), permanent: true);
+           Get.put(ThemeController());
+           Get.put(AuthController(), permanent: true);
+           Get.put(ProfileController(), permanent: true);
+           Get.put(AccountController(), permanent: true);
+           Get.put(BeneficiaryController(), permanent: true);
+           Get.put(CurrencyController(), permanent: true);
+          Get.put(NotificationCenterController(), permanent: true);
 
   runApp(const InternGrowBankingApp());
 }

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
-
+import '../../../data/models/app_notification_model.dart';
+import '../../notifications/controllers/notification_center_controller.dart';
 import '../../../data/database/local_data_service.dart';
 import '../../../data/models/bank_account_model.dart';
 import '../../../data/models/bank_transaction_model.dart';
@@ -57,6 +58,42 @@ class AccountController extends GetxController {
 
     await _dataService.insertTransaction(transaction);
     await _dataService.updateAccountBalance(accountId, newBalance);
+
+    Future<void> applyTransaction({
+    required String accountId,
+    required TxnType type,
+    required double amount,
+    required String category,
+    required String description,
+    String? beneficiaryId,
+  }) async {
+    final account = accounts.firstWhere((a) => a.id == accountId);
+    final newBalance = type == TxnType.credit ? account.balance + amount : account.balance - amount;
+
+    final transaction = BankTransaction(
+      id: const Uuid().v4(),
+      accountId: accountId,
+      type: type,
+      amount: amount,
+      category: category,
+      description: description,
+      date: DateTime.now(),
+      beneficiaryId: beneficiaryId,
+    );
+
+    await _dataService.insertTransaction(transaction);
+    await _dataService.updateAccountBalance(accountId, newBalance);
+
+    // Real, event-driven notification — fires whenever money genuinely
+    // moves, not just as a demo trigger.
+    Get.find<NotificationCenterController>().add(
+      type: AppNotificationType.transaction,
+      title: type == TxnType.credit ? 'Money Received' : 'Payment Sent',
+      body: '${type == TxnType.credit ? '+' : '-'}\$${amount.toStringAsFixed(2)} — $description',
+    );
+
+    await loadData();
+  }
 
     await loadData(); // refresh reactive state from persisted source of truth
   }
