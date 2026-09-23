@@ -16,11 +16,11 @@
 - [x] REST API Integration
 - [x] CRUD Operations
 - [ ] Local Database
-- [ ] Push Notifications
+- [x] Push Notifications
 - [x] Search & Filters
 - [x] File/Image Upload
 - [x] Maps Integration
-- [ ] Offline Support
+- [x] Offline Support
 - [ ] Error Handling
 - [ ] Responsive UI
 - [ ] Deployment (APK/AAB)

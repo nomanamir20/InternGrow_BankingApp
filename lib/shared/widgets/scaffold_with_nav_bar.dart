@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'offline_banner.dart';
 import '../../core/services/notification_service.dart';
 import '../../data/models/app_notification_model.dart';
 import '../../features/notifications/controllers/notification_center_controller.dart';
@@ -64,6 +64,7 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
       return Scaffold(
         body: Column(
           children: [
+            const OfflineBanner(),
             const NotificationBanner(),
             Expanded(
               child: IndexedStack(
