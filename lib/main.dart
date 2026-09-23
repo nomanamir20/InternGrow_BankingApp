@@ -18,6 +18,16 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Global error boundary — catches uncaught Flutter framework errors
+  // (e.g. a rendering exception deep in a widget tree) and logs them
+  // instead of only showing the default red error screen, which is
+  // acceptable in dev but not something a real banking app should ever
+  // show a user.
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint('Uncaught Flutter error: ${details.exceptionAsString()}');
+  };
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

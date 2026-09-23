@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/services/connectivity_controller.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/error_state_view.dart';
 import '../controllers/currency_controller.dart';
 
 class CurrencyExchangeScreen extends StatefulWidget {
@@ -51,35 +52,17 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (_controller.hasError.value && _controller.rates.isEmpty) {
+                if (_controller.hasError.value && _controller.rates.isEmpty) {
           final connectivity = Get.find<ConnectivityController>();
           final isOffline = !connectivity.isOnline.value;
 
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(isOffline ? Icons.cloud_off : Icons.wifi_off, size: 48, color: AppColors.error),
-                  const SizedBox(height: 12),
-                  Text(
-                    isOffline ? 'You\'re currently offline.' : 'Could not load exchange rates.',
-                    style: TextStyle(color: subTextColor, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    isOffline
-                        ? 'Live currency rates need an internet connection. All other banking features still work normally.'
-                        : 'Check your internet connection and try again.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: subTextColor, fontSize: 12),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(onPressed: _controller.fetchRates, child: const Text('Retry')),
-                ],
-              ),
-            ),
+          return ErrorStateView(
+            icon: isOffline ? Icons.cloud_off : Icons.wifi_off,
+            title: isOffline ? 'You\'re currently offline' : 'Could not load exchange rates',
+            message: isOffline
+                ? 'Live currency rates need an internet connection. All other banking features still work normally.'
+                : 'Check your internet connection and try again.',
+            onRetry: _controller.fetchRates,
           );
         }
 

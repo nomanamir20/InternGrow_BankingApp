@@ -21,7 +21,7 @@
 - [x] File/Image Upload
 - [x] Maps Integration
 - [x] Offline Support
-- [ ] Error Handling
+- [x] Error Handling
 - [ ] Responsive UI
 - [ ] Deployment (APK/AAB)
 

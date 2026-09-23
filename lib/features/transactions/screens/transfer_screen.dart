@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter/services.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../data/models/bank_transaction_model.dart';
 import '../../../data/models/beneficiary_model.dart';
@@ -151,6 +151,9 @@ class _TransferScreenState extends State<TransferScreen> {
             TextField(
               controller: _amountController,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+              ],
               style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 22, color: AppColors.primary),
               decoration: const InputDecoration(prefixText: '\$ ', hintText: '0.00'),
             ),
