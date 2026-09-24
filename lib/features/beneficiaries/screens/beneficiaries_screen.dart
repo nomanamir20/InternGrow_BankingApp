@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../data/models/beneficiary_model.dart';
+import '../../../shared/widgets/responsive_scaffold_body.dart';
 import '../controllers/beneficiary_controller.dart';
 
 class BeneficiariesScreen extends StatelessWidget {
@@ -136,86 +137,88 @@ class BeneficiariesScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
+      body: ResponsiveScaffoldBody(
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        if (controller.beneficiaries.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.people_outline, size: 64, color: subTextColor),
-                  const SizedBox(height: 16),
-                  Text('No beneficiaries yet', style: TextStyle(color: subTextColor, fontSize: 16)),
-                  const SizedBox(height: 6),
-                  Text('Add someone to send money to quickly.', style: TextStyle(color: subTextColor, fontSize: 13)),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _showBeneficiaryForm(context, controller),
-                    child: const Text('Add Beneficiary'),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-
-        return ListView.separated(
-          padding: const EdgeInsets.all(16),
-          itemCount: controller.beneficiaries.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 10),
-          itemBuilder: (context, index) {
-            final beneficiary = controller.beneficiaries[index];
-
-            return Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                border: Border.all(color: borderColor),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: AppColors.primary,
-                    child: Text(
-                      beneficiary.nickname.isNotEmpty ? beneficiary.nickname[0].toUpperCase() : '?',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          if (controller.beneficiaries.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.people_outline, size: 64, color: subTextColor),
+                    const SizedBox(height: 16),
+                    Text('No beneficiaries yet', style: TextStyle(color: subTextColor, fontSize: 16)),
+                    const SizedBox(height: 6),
+                    Text('Add someone to send money to quickly.', style: TextStyle(color: subTextColor, fontSize: 13)),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => _showBeneficiaryForm(context, controller),
+                      child: const Text('Add Beneficiary'),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(beneficiary.nickname, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
-                        Text(
-                          '${beneficiary.fullName} • ${beneficiary.bankName}',
-                          style: TextStyle(color: subTextColor, fontSize: 12),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined, size: 18),
-                    onPressed: () => _showBeneficiaryForm(context, controller, existing: beneficiary),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline, size: 18, color: AppColors.error),
-                    onPressed: () => _confirmDelete(controller, beneficiary),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
-          },
-        );
-      }),
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: controller.beneficiaries.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 10),
+            itemBuilder: (context, index) {
+              final beneficiary = controller.beneficiaries[index];
+
+              return Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  border: Border.all(color: borderColor),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 22,
+                      backgroundColor: AppColors.primary,
+                      child: Text(
+                        beneficiary.nickname.isNotEmpty ? beneficiary.nickname[0].toUpperCase() : '?',
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(beneficiary.nickname, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                          Text(
+                            '${beneficiary.fullName} • ${beneficiary.bankName}',
+                            style: TextStyle(color: subTextColor, fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 18),
+                      onPressed: () => _showBeneficiaryForm(context, controller, existing: beneficiary),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline, size: 18, color: AppColors.error),
+                      onPressed: () => _confirmDelete(controller, beneficiary),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }),
+      ),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/responsive_scaffold_body.dart';
 import '../../../shared/widgets/scaffold_with_nav_bar.dart';
 import '../../../shared/widgets/transaction_tile.dart';
 import '../controllers/account_controller.dart';
@@ -18,119 +19,119 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('InternGrow Bank')),
-      body: RefreshIndicator(
-        onRefresh: controller.loadData,
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: ResponsiveScaffoldBody(
+        child: RefreshIndicator(
+          onRefresh: controller.loadData,
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final account = controller.primaryAccount;
+            final account = controller.primaryAccount;
 
-          return ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              // Balance card
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.primary, AppColors.primaryDark],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+            return ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.primary, AppColors.primaryDark],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  borderRadius: BorderRadius.circular(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            account?.accountType ?? 'Account',
+                            style: const TextStyle(color: Colors.white70, fontSize: 13),
+                          ),
+                          const Icon(Icons.account_balance, color: AppColors.accent, size: 22),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '\$${controller.totalBalance.toStringAsFixed(2)}',
+                        style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        account?.accountNumber ?? '',
+                        style: const TextStyle(color: Colors.white60, fontSize: 13, letterSpacing: 1),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 20),
+
+                Row(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          account?.accountType ?? 'Account',
-                          style: const TextStyle(color: Colors.white70, fontSize: 13),
-                        ),
-                        const Icon(Icons.account_balance, color: AppColors.accent, size: 22),
-                      ],
+                    Expanded(
+                      child: _QuickAction(
+                        icon: Icons.send_outlined,
+                        label: 'Transfer',
+                        onTap: () => Get.toNamed(AppRoutes.transfer),
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '\$${controller.totalBalance.toStringAsFixed(2)}',
-                      style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.w800),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _QuickAction(
+                        icon: Icons.people_outline,
+                        label: 'Beneficiaries',
+                        onTap: () => Get.toNamed(AppRoutes.beneficiaries),
+                      ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      account?.accountNumber ?? '',
-                      style: const TextStyle(color: Colors.white60, fontSize: 13, letterSpacing: 1),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _QuickAction(
+                        icon: Icons.currency_exchange,
+                        label: 'Exchange',
+                        onTap: () => Get.find<NavShellController>().changeTab(2),
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 28),
 
-              // Quick actions
-              Row(
-                children: [
-                  Expanded(
-                    child: _QuickAction(
-                      icon: Icons.send_outlined,
-                      label: 'Transfer',
-                      onTap: () => Get.toNamed(AppRoutes.transfer),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Recent Transactions',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _QuickAction(
-                      icon: Icons.people_outline,
-                      label: 'Beneficiaries',
-                      onTap: () => Get.toNamed(AppRoutes.beneficiaries),
+                    GestureDetector(
+                      onTap: () => Get.find<NavShellController>().changeTab(1),
+                      child: const Text('See All', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600)),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _QuickAction(
-                      icon: Icons.currency_exchange,
-                      label: 'Exchange',
-                      onTap: () => Get.find<NavShellController>().changeTab(2),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Recent Transactions',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  GestureDetector(
-                    onTap: () => Get.find<NavShellController>().changeTab(1),
-                    child: const Text('See All', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600)),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              if (controller.recentTransactions.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
-                  child: Center(
-                    child: Text('No transactions yet.', style: TextStyle(color: subTextColor)),
-                  ),
-                )
-              else
-                for (final transaction in controller.recentTransactions)
+                if (controller.recentTransactions.isEmpty)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: TransactionTile(transaction: transaction),
-                  ),
-            ],
-          );
-        }),
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Center(
+                      child: Text('No transactions yet.', style: TextStyle(color: subTextColor)),
+                    ),
+                  )
+                else
+                  for (final transaction in controller.recentTransactions)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: TransactionTile(transaction: transaction),
+                    ),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }

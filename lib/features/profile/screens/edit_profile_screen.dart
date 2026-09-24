@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-//import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/app_text_field.dart';
+import '../../../shared/widgets/responsive_scaffold_body.dart';
 import '../controllers/profile_controller.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -60,42 +60,44 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Edit Profile')),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          AppTextField(
-            controller: _nameController,
-            label: 'Full Name',
-            hintText: 'Enter your full name',
-            prefixIcon: const Icon(Icons.person_outline),
-          ),
-          const SizedBox(height: 20),
-          AppTextField(
-            controller: _phoneController,
-            label: 'Phone Number',
-            hintText: '+1 234 567 8900',
-            keyboardType: TextInputType.phone,
-            prefixIcon: const Icon(Icons.phone_outlined),
-          ),
-          const SizedBox(height: 20),
-          AppTextField(
-            controller: _addressController,
-            label: 'Address',
-            hintText: 'Enter your address',
-            textInputAction: TextInputAction.done,
-            prefixIcon: const Icon(Icons.home_outlined),
-          ),
-          const SizedBox(height: 28),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _isSaving ? null : _handleSave,
-              child: _isSaving
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : const Text('Save Changes'),
+      body: ResponsiveScaffoldBody(
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            AppTextField(
+              controller: _nameController,
+              label: 'Full Name',
+              hintText: 'Enter your full name',
+              prefixIcon: const Icon(Icons.person_outline),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            AppTextField(
+              controller: _phoneController,
+              label: 'Phone Number',
+              hintText: '+1 234 567 8900',
+              keyboardType: TextInputType.phone,
+              prefixIcon: const Icon(Icons.phone_outlined),
+            ),
+            const SizedBox(height: 20),
+            AppTextField(
+              controller: _addressController,
+              label: 'Address',
+              hintText: 'Enter your address',
+              textInputAction: TextInputAction.done,
+              prefixIcon: const Icon(Icons.home_outlined),
+            ),
+            const SizedBox(height: 28),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isSaving ? null : _handleSave,
+                child: _isSaving
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    : const Text('Save Changes'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

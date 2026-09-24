@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../core/services/notification_service.dart';
+
 import '../../../core/routes/app_routes.dart';
+import '../../../core/services/notification_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/theme_controller.dart';
 import '../../../shared/widgets/profile_avatar.dart';
+import '../../../shared/widgets/responsive_scaffold_body.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../controllers/profile_controller.dart';
 
@@ -38,147 +40,149 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
-      body: Obx(() {
-        final profile = profileController.profile.value;
+      body: ResponsiveScaffoldBody(
+        child: Obx(() {
+          final profile = profileController.profile.value;
 
-        if (profileController.isLoading.value || profile == null) {
-          return const Center(child: CircularProgressIndicator());
-        }
+          if (profileController.isLoading.value || profile == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        final initial = profile.fullName.isNotEmpty ? profile.fullName[0].toUpperCase() : '?';
+          final initial = profile.fullName.isNotEmpty ? profile.fullName[0].toUpperCase() : '?';
 
-        return ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            Center(
-              child: Stack(
-                children: [
-                  ProfileAvatar(photoPath: profile.photoPath, initial: initial, radius: 48),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: profileController.updatePhoto,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-                        child: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
+          return ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Center(
+                child: Stack(
+                  children: [
+                    ProfileAvatar(photoPath: profile.photoPath, initial: initial, radius: 48),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: profileController.updatePhoto,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                          child: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Center(
-              child: Column(
-                children: [
-                  Text(profile.fullName, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 2),
-                  Text(profile.email, style: TextStyle(color: subTextColor, fontSize: 13)),
-                ],
+              const SizedBox(height: 12),
+              Center(
+                child: Column(
+                  children: [
+                    Text(profile.fullName, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 2),
+                    Text(profile.email, style: TextStyle(color: subTextColor, fontSize: 13)),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 28),
+              const SizedBox(height: 28),
 
-            Text('Account', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
-            _SettingsTile(
-              icon: Icons.edit_outlined,
-              title: 'Edit Personal Details',
-              onTap: () => Get.toNamed(AppRoutes.editProfile),
-            ),
-            _SettingsTile(
-              icon: Icons.people_outline,
-              title: 'Beneficiaries',
-              onTap: () => Get.toNamed(AppRoutes.beneficiaries),
-            ),
-
-            const SizedBox(height: 20),
-            Text('Preferences', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
-            Obx(() => _SettingsTile(
-                  icon: Icons.dark_mode_outlined,
-                  title: 'Dark Mode',
-                  trailing: Switch(
-                    value: themeController.isDarkMode.value,
-                    onChanged: themeController.toggleTheme,
-                  ),
-                )),
-
-            const SizedBox(height: 20),
-            Text('Account Actions', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
-            _SettingsTile(
-              icon: Icons.logout,
-              title: 'Log Out',
-              titleColor: AppColors.error,
-              iconColor: AppColors.error,
-              onTap: () => _handleLogout(context),
-            ),
-
-            const SizedBox(height: 20),
-            Text('Developer', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                borderRadius: BorderRadius.circular(12),
+              Text('Account', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(height: 8),
+              _SettingsTile(
+                icon: Icons.edit_outlined,
+                title: 'Edit Personal Details',
+                onTap: () => Get.toNamed(AppRoutes.editProfile),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.notifications_outlined, color: AppColors.primary, size: 20),
-                      const SizedBox(width: 8),
-                      const Text('Push Notification Token', style: TextStyle(fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  FutureBuilder<String?>(
-                    future: NotificationService().getToken(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2));
-                      }
-                      final token = snapshot.data;
-                      if (token == null) {
-                        return Text('Not available on this device/browser.', style: TextStyle(color: subTextColor, fontSize: 12));
-                      }
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              token,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: subTextColor, fontSize: 11, fontFamily: 'monospace'),
+              _SettingsTile(
+                icon: Icons.people_outline,
+                title: 'Beneficiaries',
+                onTap: () => Get.toNamed(AppRoutes.beneficiaries),
+              ),
+
+              const SizedBox(height: 20),
+              Text('Preferences', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(height: 8),
+              Obx(() => _SettingsTile(
+                    icon: Icons.dark_mode_outlined,
+                    title: 'Dark Mode',
+                    trailing: Switch(
+                      value: themeController.isDarkMode.value,
+                      onChanged: themeController.toggleTheme,
+                    ),
+                  )),
+
+              const SizedBox(height: 20),
+              Text('Account Actions', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(height: 8),
+              _SettingsTile(
+                icon: Icons.logout,
+                title: 'Log Out',
+                titleColor: AppColors.error,
+                iconColor: AppColors.error,
+                onTap: () => _handleLogout(context),
+              ),
+
+              const SizedBox(height: 20),
+              Text('Developer', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.notifications_outlined, color: AppColors.primary, size: 20),
+                        const SizedBox(width: 8),
+                        const Text('Push Notification Token', style: TextStyle(fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    FutureBuilder<String?>(
+                      future: NotificationService().getToken(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2));
+                        }
+                        final token = snapshot.data;
+                        if (token == null) {
+                          return Text('Not available on this device/browser.', style: TextStyle(color: subTextColor, fontSize: 12));
+                        }
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                token,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: subTextColor, fontSize: 11, fontFamily: 'monospace'),
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.copy, size: 16),
-                            onPressed: () => Clipboard.setData(ClipboardData(text: token)),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Copy this token into Firebase Console → Cloud Messaging → Send test message.',
-                    style: TextStyle(color: subTextColor, fontSize: 11),
-                  ),
-                ],
+                            IconButton(
+                              icon: const Icon(Icons.copy, size: 16),
+                              onPressed: () => Clipboard.setData(ClipboardData(text: token)),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Copy this token into Firebase Console → Cloud Messaging → Send test message.',
+                      style: TextStyle(color: subTextColor, fontSize: 11),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 20),
-            Center(child: Text('InternGrow Bank v1.0.0', style: TextStyle(color: subTextColor, fontSize: 12))),
-          ],
-        );
-      }),
+              const SizedBox(height: 20),
+              Center(child: Text('InternGrow Bank v1.0.0', style: TextStyle(color: subTextColor, fontSize: 12))),
+            ],
+          );
+        }),
+      ),
     );
   }
 }
