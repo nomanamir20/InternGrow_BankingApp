@@ -1,8 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'offline_banner.dart';
+
 import '../../core/services/notification_service.dart';
+import '../../core/utils/responsive.dart';
 import '../../data/models/app_notification_model.dart';
 import '../../features/notifications/controllers/notification_center_controller.dart';
 import '../../features/home/screens/home_screen.dart';
@@ -11,6 +12,7 @@ import '../../features/currency/screens/currency_exchange_screen.dart';
 import '../../features/atm_locator/screens/atm_locator_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import 'notification_banner.dart';
+import 'offline_banner.dart';
 
 class NavShellController extends GetxController {
   final RxInt currentIndex = 0.obs;
@@ -27,6 +29,14 @@ class ScaffoldWithNavBar extends StatefulWidget {
 
 class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
   final _notificationService = NotificationService();
+
+  static const _destinations = [
+    (icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard, label: 'Home'),
+    (icon: Icons.receipt_long_outlined, activeIcon: Icons.receipt_long, label: 'Transactions'),
+    (icon: Icons.currency_exchange, activeIcon: Icons.currency_exchange, label: 'Exchange'),
+    (icon: Icons.map_outlined, activeIcon: Icons.map, label: 'ATM/Branch'),
+    (icon: Icons.person_outline, activeIcon: Icons.person, label: 'Profile'),
+  ];
 
   @override
   void initState() {
@@ -60,32 +70,65 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
       const ProfileScreen(),
     ];
 
+    final isWideScreen = Responsive.isDesktop(context);
+
     return Obx(() {
-      return Scaffold(
-        body: Column(
-          children: [
-            const OfflineBanner(),
-            const NotificationBanner(),
-            Expanded(
-              child: IndexedStack(
-                index: controller.currentIndex.value,
-                children: screens,
-              ),
+      final content = Column(
+        children: [
+          const OfflineBanner(),
+          const NotificationBanner(),
+          Expanded(
+            child: IndexedStack(
+              index: controller.currentIndex.value,
+              children: screens,
             ),
-          ],
-        ),
+          ),
+        ],
+      );
+
+      // Desktop/wide web: side navigation rail instead of a bottom bar —
+      // the standard responsive pattern for wide screens, since a bottom
+      // bar stretched across a 1400px window looks and behaves poorly.
+      if (isWideScreen) {
+        return Scaffold(
+          body: Row(
+            children: [
+              NavigationRail(
+                selectedIndex: controller.currentIndex.value,
+                onDestinationSelected: controller.changeTab,
+                labelType: NavigationRailLabelType.all,
+                destinations: [
+                  for (final dest in _destinations)
+                    NavigationRailDestination(
+                      icon: Icon(dest.icon),
+                      selectedIcon: Icon(dest.activeIcon),
+                      label: Text(dest.label),
+                    ),
+                ],
+              ),
+              const VerticalDivider(width: 1),
+              Expanded(child: content),
+            ],
+          ),
+        );
+      }
+
+      // Mobile/tablet: standard bottom navigation bar.
+      return Scaffold(
+        body: content,
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: controller.currentIndex.value,
           onTap: controller.changeTab,
           type: BottomNavigationBarType.fixed,
           selectedFontSize: 11,
           unselectedFontSize: 11,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), activeIcon: Icon(Icons.dashboard), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.receipt_long_outlined), activeIcon: Icon(Icons.receipt_long), label: 'Transactions'),
-            BottomNavigationBarItem(icon: Icon(Icons.currency_exchange), label: 'Exchange'),
-            BottomNavigationBarItem(icon: Icon(Icons.map_outlined), activeIcon: Icon(Icons.map), label: 'ATM/Branch'),
-            BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Profile'),
+          items: [
+            for (final dest in _destinations)
+              BottomNavigationBarItem(
+                icon: Icon(dest.icon),
+                activeIcon: Icon(dest.activeIcon),
+                label: dest.label,
+              ),
           ],
         ),
       );

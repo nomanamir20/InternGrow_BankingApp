@@ -22,7 +22,7 @@
 - [x] Maps Integration
 - [x] Offline Support
 - [x] Error Handling
-- [ ] Responsive UI
+- [x] Responsive UI
 - [ ] Deployment (APK/AAB)
 
 ---
