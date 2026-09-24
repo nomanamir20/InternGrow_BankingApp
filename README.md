@@ -11,11 +11,11 @@
 
 ## ✨ Mandatory Features
 
-- [ ] Authentication
+- [x] Authentication
 - [x] User Profiles
 - [x] REST API Integration
 - [x] CRUD Operations
-- [ ] Local Database
+- [x] Local Database
 - [x] Push Notifications
 - [x] Search & Filters
 - [x] File/Image Upload
